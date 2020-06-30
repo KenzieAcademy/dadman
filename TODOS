@@ -1,0 +1,31 @@
+TODO:
+- setup:
+    - [DONE] initialize number of chances (6)
+    - [DONE] obtain a random phrase (https://icanhazdadjoke.com/)
+    - [DONE] represent the phrase as a series of underscores
+    - [DONE] display the outcome (number of incorrect guesses remaining)
+    - [DONE] maintain a list of guessed letters
+- game loop:
+    - [DONE] prompt user to enter a letter
+    - [DONE] determine whether the user's guess is in the phrase
+    - provide feedback about the user's guess
+        - [DONE] if correct, display letter where it belongs in the phrase
+        - [DONE]if incorrect, decrement number of guesses remaining
+    - [DONE] display all guessed letters
+    - is game over?
+        - [DONE] win: phrase is entirely filled
+        - [DONE] lose: number of incorrect guesses used
+
+    - [DONE] Offer the choice of continuing the game after a joke
+      is completed
+    - Qualitative scoring
+        - [DONE] Keep track of score
+        - [DONE] Qualitative: Points rewarded per joke are reduced
+          by the number of wrong guesses (100 // guesses remaining)
+    - High score (stored in a file)
+    - Startup screen
+        - Choose a difficulty level at start of game
+            - Easy: "Guesses remaining" refresh every joke
+            - Hard: "Guesses remaining" are lost forever
+            - Use two files (easy, hard) to track high score for
+            each difficulty level
