@@ -1,23 +1,5 @@
 """
 A Dad Joke Wheel of Fortune-style Game!
-
-TODO:
-- setup:
-    - [DONE] initialize number of chances (6)
-    - [DONE] obtain a random phrase (https://icanhazdadjoke.com/)
-    - [DONE] represent the phrase as a series of underscores
-    - [DONE] display the outcome (number of incorrect guesses remaining)
-    - [DONE] maintain a list of guessed letters
-- game loop:
-    - [DONE] prompt user to enter a letter
-    - [DONE] determine whether the user's guess is in the phrase
-    - provide feedback about the user's guess
-        - [DONE] if correct, display letter where it belongs in the phrase
-        - [DONE]if incorrect, decrement number of guesses remaining
-    - [DONE] display all guessed letters
-    - is game over?
-        - [DONE] win: phrase is entirely filled
-        - [DONE] lose: number of incorrect guesses used
 """
 
 import os
@@ -29,6 +11,12 @@ import requests
 joke_request_attempts = 3
 guessed_letters = []
 wrong_letters = []
+INITIAL_GUESSES = 5
+guesses_remaining = INITIAL_GUESSES
+score = 0
+
+# in-game messages
+thanks = "Thanks for playing!"
 
 
 def get_joke():
@@ -61,19 +49,50 @@ def update_blanks(punchline):
     return ' '.join(display)
 
 
+def continue_game(msg):
+    """Asks the user if they would like to play more."""
+    choice = input(msg)
+    if choice not in ('y', 'n'):
+        continue_game(msg)
+    return True if choice == 'y' else False
+
+
+def init(lost=False):
+    """Initialize all game settings."""
+    global guesses_remaining, score
+    guesses_remaining = INITIAL_GUESSES
+    if lost:
+        score = 0
+    guessed_letters.clear()
+    wrong_letters.clear()
+
+
 def main():
-    guesses_remaining = 5
-    joke = get_joke()
-    text, punchline = joke
+    global guesses_remaining, score
+    init()
+    joke, punchline = get_joke()
 
     while True:
         os.system('cls' if os.name == 'nt' else 'clear')
-        print(f"\n{text}")
+        print(f"\n{joke}")
         unguessed = update_blanks(punchline)
         if '_' not in unguessed:
             print(punchline)
-            print('You win! Good job, nerd!')
-            break
+
+            # give the player their points and display them
+            score += (100 // INITIAL_GUESSES) * guesses_remaining
+            print(f'\nYour score: {score}')
+
+            will_continue = continue_game('Continue? ')
+            if will_continue:
+                # re-initialize game
+                init()
+                # get a new joke
+                joke, punchline = get_joke()
+                continue
+            else:
+                print(thanks)
+                break
         print(unguessed)
         print(f"\nGuesses remaining: {guesses_remaining}\n")
         print(f"Wrong guesses: {' '.join(wrong_letters)}")
@@ -85,8 +104,16 @@ def main():
         if guess not in guessed_letters:
             guessed_letters.append(guess)
         if not guesses_remaining:
-            print('Game Over!')
-            break
+            print('Game over.')
+            start_new_game = continue_game('New game? ')
+            if start_new_game:
+                # re-initialize game
+                init(lost=True)
+                # get a new joke
+                joke, punchline = get_joke()
+            else:
+                print(thanks)
+                break
 
 
 if __name__ == '__main__':
