@@ -1,8 +1,3 @@
-import os
-import re
-import sys
-import requests
-
 """
 A Dad Joke Wheel of Fortune-style Game!
 
@@ -24,8 +19,16 @@ TODO:
         - [DONE] win: phrase is entirely filled
         - [DONE] lose: number of incorrect guesses used
 """
+
+import os
+import re
+import sys
+import requests
+
+# game settings
 joke_request_attempts = 3
 guessed_letters = []
+wrong_letters = []
 
 
 def get_joke():
@@ -73,9 +76,10 @@ def main():
             break
         print(unguessed)
         print(f"\nGuesses remaining: {guesses_remaining}\n")
-        print(f"Previous guesses: {' '.join(guessed_letters)}")
+        print(f"Wrong guesses: {' '.join(wrong_letters)}")
         guess = input("Guess a letter: ").lower()
         if guess not in punchline:
+            wrong_letters.append(guess)
             if guess not in guessed_letters:
                 guesses_remaining -= 1
         if guess not in guessed_letters:
